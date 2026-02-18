@@ -259,8 +259,8 @@ function validateForm() {
 
     let errors = [];
 
-    if (!title) errors.push("กรุณากรอกชื่องาน");
-    if (!deadline) errors.push("กรุณาเลือกวันกำหนดส่ง");
+    if (!title) errors.push("Please enter task name");
+    if (!deadline) errors.push("Please select deadline");
 
     if (errors.length > 0) {
         errorDiv.innerHTML = errors.join("<br>");
