@@ -218,3 +218,69 @@ li.done strong {
     background: #ccc;
     color: black;
 }
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 12px;
+    }
+
+    .container {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .task-input {
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    input,
+    select {
+        font-size: 15px;
+        padding: 12px;
+    }
+
+    button {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    /* ===== Card Style ===== */
+    li {
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    /* ===== Action Buttons Mobile ===== */
+    li div:last-child {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+    }
+
+    li div:last-child button {
+        flex: 1;
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    /* ===== Urgent Card Stronger ===== */
+    #urgentList li {
+        background: #ffeaea;
+        border-left: 6px solid #e53935;
+    }
+
+    /* ===== Status Badge Better ===== */
+    .status {
+        font-size: 10px;
+        padding: 3px 8px;
+        margin-top: 6px;
+    }
+
+}
