@@ -275,6 +275,8 @@ function validateForm() {
 
 document.getElementById("taskTitle").addEventListener("input", validateForm);
 document.getElementById("deadline").addEventListener("change", validateForm);
+document.getElementById("addBtn").addEventListener("click", addTask);
+
 
 sortTasks();
 renderTasks();
