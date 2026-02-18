@@ -1,0 +1,220 @@
+/* ===== Base ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f7f8fa;
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #333;
+}
+
+
+/* ===== Container ===== */
+.container {
+    width: 100%;
+    max-width: 680px;
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+
+/* ===== Form Section ===== */
+.task-input {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    background: #ffffff;
+}
+
+
+/* ===== Buttons ===== */
+button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #357abd;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+/* ===== Error Message ===== */
+.error-message {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+
+/* ===== Lists ===== */
+ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+li {
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s ease;
+}
+
+li:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+
+/* ===== Done State ===== */
+li.done {
+    opacity: 0.6;
+}
+
+li.done strong {
+    text-decoration: line-through;
+}
+
+
+/* ===== Urgent Highlight ===== */
+#urgentList li {
+    border-left: 4px solid #e24a4a;
+    background: #fff5f5;
+}
+
+
+/* ===== Status Badge ===== */
+.status {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: #eeeeee;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+
+    .task-input {
+        grid-template-columns: 1fr;
+    }
+
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    li button {
+        width: 100%;
+    }
+}
+
+.countdown {
+    font-size: 12px;
+    color: #1976d2;
+    margin-left: 8px;
+}
+
+.overdue {
+    font-size: 12px;
+    color: white;
+    background: crimson;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.dates {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #777;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.secondary {
+    background: #ccc;
+    color: black;
+}

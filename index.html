@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Prioritization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Task Prioritization System</h1>
+    </header>
+
+    <!-- ===== Add Task Section ===== -->
+    <section class="add-task">
+        <div class="task-input">
+
+            <input type="text" id="taskTitle" placeholder=" Task name..." required>
+
+            <input type="text" id="description" placeholder="Description (optional)">
+
+            <input type="date" id="deadline">
+
+            <select id="priority">
+                <option value="3">High Priority</option>
+                <option value="2">Medium Priority</option>
+                <option value="1">Low Priority</option>
+            </select>
+
+            <select id="status">
+                <option value="todo">To-do</option>
+                <option value="doing">Doing</option>
+                <option value="done">Done</option>
+            </select>
+
+            <button id="addBtn" disabled>Add Task</button>
+
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+    </section>
+
+    <!-- ===== Urgent Section ===== -->
+    <section class="urgent-section">
+        <h2>🔥 Urgent Tasks</h2>
+        <ul id="urgentList"></ul>
+    </section>
+
+    <!-- ===== All Tasks Section ===== -->
+    <section class="all-section">
+        <h2>All Tasks</h2>
+        <ul id="taskList"></ul>
+    </section>
+
+</div>
+
+
+<!-- ================= EDIT MODAL ================= -->
+<div id="editModal" class="modal hidden">
+    <div class="modal-content">
+
+        <h3>Edit Task</h3>
+
+        <input type="hidden" id="editId">
+
+        <label for="editTitle">Title</label>
+        <input type="text" id="editTitle">
+
+        <label for="editDescription">Description</label>
+        <input type="text" id="editDescription">
+
+        <label for="editDeadline">Deadline</label>
+        <input type="date" id="editDeadline">
+
+        <label for="editPriority">Priority</label>
+        <select id="editPriority">
+            <option value="3">High</option>
+            <option value="2">Medium</option>
+            <option value="1">Low</option>
+        </select>
+
+        <label for="editStatus">Status</label>
+        <select id="editStatus">
+            <option value="todo">To-do</option>
+            <option value="doing">Doing</option>
+            <option value="done">Done</option>
+        </select>
+
+        <div class="modal-buttons">
+            <button id="saveEdit">Save</button>
+            <button id="cancelEdit" class="secondary">Cancel</button>
+        </div>
+
+    </div>
+</div>
+<!-- ================= END MODAL ================= -->
+
+<script src="script.js"></script>
+</body>
+</html>
