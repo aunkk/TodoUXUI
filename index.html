@@ -6,83 +6,98 @@
     <title>Task Prioritization</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="container">
+<main class="container">
 
     <header>
         <h1>Task Prioritization System</h1>
     </header>
 
-    <!-- ===== Add Task Section ===== -->
+    <!-- ================= ADD BUTTON ================= -->
     <section class="add-task">
-        <div class="task-input">
-
-            <input type="text" id="taskTitle" placeholder=" Task name..." required>
-
-            <input type="text" id="description" placeholder="Description (optional)">
-
-            <input type="date" id="deadline">
-
-            <select id="priority">
-                <option value="3">High Priority</option>
-                <option value="2">Medium Priority</option>
-                <option value="1">Low Priority</option>
-            </select>
-
-            <select id="status">
-                <option value="todo">To-do</option>
-                <option value="doing">Doing</option>
-                <option value="done">Done</option>
-            </select>
-
-            <button id="addBtn" disabled>Add Task</button>
-
-        </div>
-
-        <div id="errorMessage" class="error-message"></div>
+        <button id="addBtn">+ Add Task</button>
     </section>
 
-    <!-- ===== Urgent Section ===== -->
+    <!-- ================= URGENT ================= -->
     <section class="urgent-section">
         <h2>🔥 Urgent Tasks</h2>
         <ul id="urgentList"></ul>
     </section>
 
-    <!-- ===== All Tasks Section ===== -->
+    <!-- ================= ALL TASKS ================= -->
     <section class="all-section">
-        <h2>All Tasks</h2>
+        <h2>Active Tasks</h2>
         <ul id="taskList"></ul>
     </section>
 
+    <!-- ================= DONE TASKS ================= -->
+    <section class="done-section">
+    <h2>✅ Completed Tasks</h2>
+    <ul id="doneList"></ul>
+</section>
+
+
+</main>
+
+<!-- ================================================= -->
+<!-- ================= ADD MODAL ===================== -->
+<!-- ================================================= -->
+
+<div id="addModal" class="modal hidden">
+    <div class="modal-content">
+
+        <h2>Add Task</h2>
+
+        <!-- Error inside modal -->
+        <div id="addError" class="error-message"></div>
+
+        <input type="text" id="addTitle" placeholder="Task title">
+        <textarea id="addDescription" placeholder="Description"></textarea>
+        <input type="date" id="addDeadline">
+
+        <select id="addPriority">
+            <option value="1">Low</option>
+            <option value="2">Medium</option>
+            <option value="3">High</option>
+        </select>
+
+        <select id="addStatus">
+            <option value="todo">TODO</option>
+            <option value="doing">DOING</option>
+            <option value="done">DONE</option>
+        </select>
+
+        <div class="modal-buttons">
+            <button id="cancelAddModal" class="secondary">Cancel</button>
+            <button id="confirmAdd">Add</button>
+        </div>
+
+    </div>
 </div>
 
+<!-- ================================================= -->
+<!-- ================= EDIT MODAL ==================== -->
+<!-- ================================================= -->
 
-<!-- ================= EDIT MODAL ================= -->
 <div id="editModal" class="modal hidden">
     <div class="modal-content">
 
-        <h3>Edit Task</h3>
+        <h2>Edit Task</h2>
 
         <input type="hidden" id="editId">
 
-        <label for="editTitle">Title</label>
-        <input type="text" id="editTitle">
-
-        <label for="editDescription">Description</label>
-        <input type="text" id="editDescription">
-
-        <label for="editDeadline">Deadline</label>
+        <input type="text" id="editTitle" placeholder="Task title">
+        <textarea id="editDescription" placeholder="Description"></textarea>
         <input type="date" id="editDeadline">
 
-        <label for="editPriority">Priority</label>
         <select id="editPriority">
             <option value="3">High</option>
             <option value="2">Medium</option>
             <option value="1">Low</option>
         </select>
 
-        <label for="editStatus">Status</label>
         <select id="editStatus">
             <option value="todo">To-do</option>
             <option value="doing">Doing</option>
@@ -90,13 +105,12 @@
         </select>
 
         <div class="modal-buttons">
-            <button id="saveEdit">Save</button>
             <button id="cancelEdit" class="secondary">Cancel</button>
+            <button id="saveEdit">Save</button>
         </div>
 
     </div>
 </div>
-<!-- ================= END MODAL ================= -->
 
 <script src="script.js"></script>
 </body>
