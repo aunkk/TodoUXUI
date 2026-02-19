@@ -1,61 +1,70 @@
+/* ============================= */
+/* STATE */
+/* ============================= */
+
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+/* ============================= */
+/* STORAGE */
+/* ============================= */
 
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function addTask() {
-    if (!validateForm()) return;
+/* ============================= */
+/* UTILITIES */
+/* ============================= */
+function createTaskElement(task, showActions = true) {
 
-    const title = document.getElementById("taskTitle").value;
-    const description = document.getElementById("description").value;
-    const deadline = document.getElementById("deadline").value;
-    const priority = Number(document.getElementById("priority").value);
-    const status = document.getElementById("status").value;
+    const li = document.createElement("li");
+    li.classList.add(task.status);
 
-    if (title.trim() === "") return;
+    li.innerHTML = `
+        <div>
+            <strong>${task.title}</strong>
+            <small>Deadline: ${task.deadline || "None"}</small>
 
-    const now = new Date().toISOString();
+            ${showActions ? `
+            <select class="status-select" data-id="${task.id}">
+                <option value="todo" ${task.status === "todo" ? "selected" : ""}>TODO</option>
+                <option value="doing" ${task.status === "doing" ? "selected" : ""}>DOING</option>
+                <option value="done" ${task.status === "done" ? "selected" : ""}>DONE</option>
+            </select>
+            ` : ""}
 
-    const newTask = {
-        id: Date.now(),
-        title,
-        description,
-        priority,
-        status,
-        deadline: deadline || null,
-        createdAt: now,
-        updatedAt: now
-    };
+            <div class="dates">
+                <small>Created: ${formatDate(task.createdAt)}</small>
+                <small>Updated: ${formatDate(task.updatedAt)}</small>
+            </div>
+        </div>
 
-    tasks.push(newTask);
+        ${showActions ? `
+        <div>
+            <button class="edit-btn" data-id="${task.id}">Edit</button>
+            <button class="delete-btn" data-id="${task.id}">Delete</button>
+        </div>
+        ` : ""}
+    `;
 
-    sortTasks();
-    saveTasks();
-    renderTasks();
-
-    document.getElementById("taskTitle").value = "";
-    document.getElementById("description").value = "";
-    document.getElementById("deadline").value = "";
+    return li;
 }
 
-function deleteTask(id) {
-    tasks = tasks.filter(task => task.id !== id);
-    saveTasks();
-    renderTasks();
-}
+const nowISO = () => new Date().toISOString();
+
+const daysBetween = (date) =>
+    Math.ceil((new Date(date) - new Date()) / (1000 * 60 * 60 * 24));
 
 function calculateScore(task) {
     let score = task.priority * 10;
 
-    if (task.deadline) {
-        const diff = new Date(task.deadline) - new Date();
-        const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    if (!task.deadline) return score;
 
-        if (daysLeft < 0) score += 50;
-        else if (daysLeft <= 2) score += 20;
-        else if (daysLeft <= 5) score += 10;
-    }
+    const daysLeft = daysBetween(task.deadline);
+
+    if (daysLeft < 0) score += 50;
+    else if (daysLeft <= 2) score += 20;
+    else if (daysLeft <= 5) score += 10;
 
     return score;
 }
@@ -63,88 +72,189 @@ function calculateScore(task) {
 function isUrgent(task) {
     if (!task.deadline || task.status === "done") return false;
 
-    const diff = new Date(task.deadline) - new Date();
-    const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    const daysLeft = daysBetween(task.deadline);
 
-    if (daysLeft < 0) return true;
-    if (daysLeft <= 2 && task.priority >= 2) return true;
-    if (task.priority === 3 && daysLeft <= 5) return true;
+    return (
+        daysLeft < 0 ||
+        (daysLeft <= 2 && task.priority >= 2) ||
+        (task.priority === 3 && daysLeft <= 5)
+    );
+}
 
-    return false;
+function formatDate(dateStr) {
+    return dateStr
+        ? new Date(dateStr).toLocaleString("th-TH")
+        : "-";
 }
 
 function sortTasks() {
     tasks.sort((a, b) => calculateScore(b) - calculateScore(a));
 }
 
+/* ============================= */
+/* RENDER */
+/* ============================= */
+
 function renderTasks() {
+
     const urgentList = document.getElementById("urgentList");
-    const list = document.getElementById("taskList");
+    const taskList = document.getElementById("taskList");
+    const doneList = document.getElementById("doneList");
 
     urgentList.innerHTML = "";
-    list.innerHTML = "";
+    taskList.innerHTML = "";
+    doneList.innerHTML = "";
 
-    /* ===== SORT URGENT BY DEADLINE ===== */
+    /* ===== URGENT ===== */
     const urgentTasks = tasks
-        .filter(task => isUrgent(task))
+        .filter(task => isUrgent(task) && task.status !== "done")
         .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-    /* ===== RENDER URGENT (READ ONLY) ===== */
-    urgentTasks.forEach(task => {
-
-        const urgentLi = document.createElement("li");
-        const daysLeft = getDaysLeft(task.deadline);
-
-        let badge = "";
-        if (daysLeft < 0) {
-            badge = `<span class="overdue">OVERDUE</span>`;
-        } else {
-            badge = `<span class="countdown">เหลือ ${daysLeft} วัน</span>`;
-        }
-
-        urgentLi.innerHTML = `
-            <div>
-                <strong>${task.title}</strong>
-                <small>Deadline: ${task.deadline}</small>
-                ${badge}
-            </div>
-        `;
-
-        urgentList.appendChild(urgentLi);
-    });
-
-    /* ===== RENDER ALL TASKS (FULL EDITABLE) ===== */
-    tasks.forEach(task => {
-
-    const li = document.createElement("li");
-
-    if (task.status === "done") {
-        li.classList.add("done");
+    if (urgentTasks.length === 0) {
+        urgentList.innerHTML =
+            `<li class="empty-state urgent-empty">None</li>`;
+    } else {
+        urgentTasks.forEach(task => {
+            const li = createTaskElement(task, false);
+            urgentList.appendChild(li);
+        });
     }
 
-    li.innerHTML = `
-        <div>
-            <strong>${task.title}</strong>
-            <small>Deadline: ${task.deadline || "None"}</small>
-            <div class="status">${task.status.toUpperCase()}</div>
-            <div class="dates">
-                <small>Created: ${formatDate(task.createdAt)}</small>
-                <small>Updated: ${formatDate(task.updatedAt)}</small>
-            </div>
-        </div>
+    /* ===== ACTIVE TASKS (todo + doing) ===== */
+    const activeTasks = tasks.filter(task => task.status !== "done");
 
-        <div>
-            <button onclick="openEditModal(${task.id})">Edit</button>
-            <button onclick="deleteTask(${task.id})">Delete</button>
-        </div>
-    `;
+    if (activeTasks.length === 0) {
+        taskList.innerHTML =
+            `<li class="empty-state">None</li>`;
+    } else {
+        activeTasks.forEach(task => {
+            const li = createTaskElement(task, true);
+            taskList.appendChild(li);
+        });
+    }
 
-    list.appendChild(li);
+    /* ===== DONE TASKS ===== */
+    const completedTasks = tasks.filter(task => task.status === "done");
+
+    if (completedTasks.length === 0) {
+        doneList.innerHTML =
+            `<li class="empty-state">None</li>`;
+    } else {
+        completedTasks.forEach(task => {
+            const li = createTaskElement(task, true);
+            doneList.appendChild(li);
+        });
+    }
+
+    attachDynamicEvents();
+}
+
+
+/* ============================= */
+/* EVENTS */
+/* ============================= */
+
+function attachDynamicEvents() {
+
+    /* Status Change */
+    document.querySelectorAll(".status-select").forEach(select => {
+        select.addEventListener("change", function () {
+            const id = Number(this.dataset.id);
+            updateTask(id, { status: this.value });
+        });
+    });
+
+    /* Delete */
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const id = Number(this.dataset.id);
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+            renderTasks();
+        });
+    });
+
+    /* Edit */
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            openEditModal(Number(this.dataset.id));
+        });
+    });
+}
+
+function updateTask(id, updates) {
+    tasks = tasks.map(task =>
+        task.id === id
+            ? { ...task, ...updates, updatedAt: nowISO() }
+            : task
+    );
+
+    sortTasks();
+    saveTasks();
+    renderTasks();
+}
+
+/* ============================= */
+/* ADD MODAL */
+/* ============================= */
+
+function validateAddModal() {
+    const title = document.getElementById("addTitle").value.trim();
+    const deadline = document.getElementById("addDeadline").value;
+    const errorDiv = document.getElementById("addError");
+
+    let errors = [];
+
+    if (!title) errors.push("Please enter task name");
+    if (!deadline) errors.push("Please select deadline");
+
+    if (errors.length) {
+        errorDiv.innerHTML = errors.join("<br>");
+        return false;
+    }
+
+    errorDiv.innerHTML = "";
+    return true;
+}
+
+function openAddModal() {
+    document.getElementById("addModal").classList.remove("hidden");
+}
+
+function closeAddModal() {
+    document.getElementById("addModal").classList.add("hidden");
+    document.getElementById("addError").innerHTML = "";
+}
+
+document.getElementById("addBtn").addEventListener("click", openAddModal);
+document.getElementById("cancelAddModal").addEventListener("click", closeAddModal);
+
+document.getElementById("confirmAdd").addEventListener("click", function () {
+
+    if (!validateAddModal()) return;
+
+    const newTask = {
+        id: Date.now(),
+        title: document.getElementById("addTitle").value.trim(),
+        description: document.getElementById("addDescription").value.trim(),
+        deadline: document.getElementById("addDeadline").value,
+        priority: Number(document.getElementById("addPriority").value),
+        status: document.getElementById("addStatus").value,
+        createdAt: nowISO(),
+        updatedAt: nowISO()
+    };
+
+    tasks.push(newTask);
+
+    sortTasks();
+    saveTasks();
+    renderTasks();
+    closeAddModal();
 });
 
-
-    attachEditEvents();
-}
+/* ============================= */
+/* EDIT MODAL */
+/* ============================= */
 
 function openEditModal(id) {
     const task = tasks.find(t => t.id === id);
@@ -170,114 +280,20 @@ document.getElementById("saveEdit").addEventListener("click", function () {
 
     const id = Number(document.getElementById("editId").value);
 
-    tasks = tasks.map(task => {
-        if (task.id === id) {
-            return {
-                ...task,
-                title: document.getElementById("editTitle").value,
-                description: document.getElementById("editDescription").value,
-                deadline: document.getElementById("editDeadline").value || null,
-                priority: Number(document.getElementById("editPriority").value),
-                status: document.getElementById("editStatus").value,
-                updatedAt: new Date().toISOString()
-            };
-        }
-        return task;
+    updateTask(id, {
+        title: document.getElementById("editTitle").value.trim(),
+        description: document.getElementById("editDescription").value.trim(),
+        deadline: document.getElementById("editDeadline").value || null,
+        priority: Number(document.getElementById("editPriority").value),
+        status: document.getElementById("editStatus").value
     });
 
-    sortTasks();
-    saveTasks();
-    renderTasks();
     closeEditModal();
 });
 
-function getDaysLeft(deadline) {
-    const diff = new Date(deadline) - new Date();
-    return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
-
-function formatDate(dateStr) {
-    if (!dateStr) return "-";
-    return new Date(dateStr).toLocaleString("th-TH");
-}
-
-
-function attachStatusEvents() {
-    document.querySelectorAll(".status-select").forEach(select => {
-        select.addEventListener("change", function () {
-            const id = Number(this.getAttribute("data-id"));
-            const newStatus = this.value;
-
-            tasks = tasks.map(task => {
-                if (task.id === id) {
-                    return {
-                        ...task,
-                        status: newStatus,
-                        updatedAt: new Date().toISOString()
-                    };
-                }
-                return task;
-            });
-
-            sortTasks();
-            saveTasks();
-            renderTasks();
-        });
-    });
-}
-
-function attachEditEvents() {
-    document.querySelectorAll("[data-field]").forEach(element => {
-        element.addEventListener("change", function () {
-            const id = Number(this.getAttribute("data-id"));
-            const field = this.getAttribute("data-field");
-            let value = this.value;
-
-            tasks = tasks.map(task => {
-                if (task.id === id) {
-                    return {
-                        ...task,
-                        [field]: field === "priority" ? Number(value) : value,
-                        updatedAt: new Date().toISOString()
-                    };
-                }
-                return task;
-            });
-
-            sortTasks();
-            saveTasks();
-            renderTasks();
-        });
-    });
-}
-
-function validateForm() {
-    const title = document.getElementById("taskTitle").value.trim();
-    const deadline = document.getElementById("deadline").value;
-    const errorDiv = document.getElementById("errorMessage");
-    const addBtn = document.getElementById("addBtn");
-
-    let errors = [];
-
-    if (!title) errors.push("Please enter task name");
-    if (!deadline) errors.push("Please select deadline");
-
-    if (errors.length > 0) {
-        errorDiv.innerHTML = errors.join("<br>");
-        addBtn.disabled = true;
-        return false;
-    } else {
-        errorDiv.innerHTML = "";
-        addBtn.disabled = false;
-        return true;
-    }
-}
-
-document.getElementById("taskTitle").addEventListener("input", validateForm);
-document.getElementById("deadline").addEventListener("change", validateForm);
-document.getElementById("addBtn").addEventListener("click", addTask);
-
+/* ============================= */
+/* INIT */
+/* ============================= */
 
 sortTasks();
 renderTasks();
-validateForm();
