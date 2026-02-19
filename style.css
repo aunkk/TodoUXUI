@@ -1,4 +1,7 @@
-/* ===== Base ===== */
+/* ============================= */
+/* BASE */
+/* ============================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -14,14 +17,16 @@ body {
     color: #333;
 }
 
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
 
-/* ===== Container ===== */
 .container {
     width: 100%;
     max-width: 680px;
-    background: #ffffff;
+    background: #fff;
     padding: 28px;
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.05);
 }
 
@@ -31,42 +36,47 @@ h1 {
     font-weight: 600;
 }
 
-
-/* ===== Form Section ===== */
-.task-input {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
+/* ============================= */
+/* FORM ELEMENTS */
+/* ============================= */
 
 input,
-select {
+select,
+textarea {
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #e0e0e0;
     background: #fafafa;
     font-size: 14px;
+    width: 100%;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #4a90e2;
-    background: #ffffff;
+    background: #fff;
 }
 
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
 
-/* ===== Buttons ===== */
 button {
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: none;
     font-size: 14px;
     background-color: #4a90e2;
     color: white;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.1s ease;
+    transition: 0.2s ease;
 }
 
 button:hover {
@@ -78,43 +88,71 @@ button:active {
 }
 
 button:disabled {
-    background-color: #cccccc;
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
+.secondary {
+    background: #e0e0e0;
+    color: #333;
+}
 
-/* ===== Error Message ===== */
+/* ============================= */
+/* ERROR */
+/* ============================= */
+
 .error-message {
     color: #d32f2f;
     font-size: 13px;
     margin-bottom: 10px;
 }
 
+/* ============================= */
+/* LISTS */
+/* ============================= */
 
-/* ===== Lists ===== */
+/* ============================= */
+/* STATUS COLORS */
+/* ============================= */
+
+li.doing {
+    background: #eef5ff;
+    border-left: 6px solid #4a90e2;
+}
+
+li.todo {
+    background: #fff5ea;
+    border-left: 6px solid #dea06a;
+}
+
+li.done {
+    background: #e8f7ee;
+    border-left: 6px solid #2e7d32;
+    opacity: 0.7;
+}
+
+
 ul {
     list-style: none;
     margin-top: 10px;
 }
 
 li {
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: box-shadow 0.2s ease;
+    transition: 0.2s ease;
 }
 
 li:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-
-/* ===== Done State ===== */
 li.done {
     opacity: 0.6;
 }
@@ -123,41 +161,26 @@ li.done strong {
     text-decoration: line-through;
 }
 
+/* ============================= */
+/* URGENT */
+/* ============================= */
 
-/* ===== Urgent Highlight ===== */
 #urgentList li {
-    border-left: 4px solid #e24a4a;
-    background: #fff5f5;
+    border-left: 6px solid #e53935;
+    background: #ffeaea;
 }
 
+/* ============================= */
+/* BADGES */
+/* ============================= */
 
-/* ===== Status Badge ===== */
 .status {
     font-size: 11px;
     padding: 4px 8px;
     border-radius: 20px;
-    background: #eeeeee;
+    background: #eee;
     display: inline-block;
     margin-top: 4px;
-}
-
-
-/* ===== Responsive ===== */
-@media (max-width: 600px) {
-
-    .task-input {
-        grid-template-columns: 1fr;
-    }
-
-    li {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    li button {
-        width: 100%;
-    }
 }
 
 .countdown {
@@ -171,7 +194,7 @@ li.done strong {
     color: white;
     background: crimson;
     padding: 2px 6px;
-    border-radius: 4px;
+    border-radius: 6px;
     margin-left: 8px;
 }
 
@@ -182,6 +205,30 @@ li.done strong {
     display: flex;
     flex-direction: column;
 }
+
+/* ============================= */
+/* EMPTY STATE */
+/* ============================= */
+
+.empty-state {
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    background: #f3f5f8;
+    border-radius: 12px;
+    border: 1px dashed #dcdcdc;
+}
+
+.urgent-empty {
+    background: #fff4f4;
+    border: 1px dashed #ffb3b3;
+    color: #cc5555;
+}
+
+/* ============================= */
+/* MODAL */
+/* ============================= */
 
 .modal {
     position: fixed;
@@ -198,26 +245,19 @@ li.done strong {
 }
 
 .modal-content {
-    background: white;
+    background: #fff;
     padding: 24px;
-    border-radius: 12px;
+    border-radius: 20px;
     width: 90%;
-    max-width: 400px;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
 }
 
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.secondary {
-    background: #ccc;
-    color: black;
-}
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
 
 @media (max-width: 600px) {
 
@@ -227,7 +267,6 @@ li.done strong {
 
     .container {
         padding: 18px;
-        border-radius: 16px;
     }
 
     h1 {
@@ -235,29 +274,12 @@ li.done strong {
         margin-bottom: 18px;
     }
 
-    .task-input {
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    input,
-    select {
-        font-size: 15px;
-        padding: 12px;
-    }
-
-    button {
-        padding: 14px;
-        font-size: 15px;
-    }
-
-    /* ===== Card Style ===== */
     li {
-        border-radius: 16px;
-        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
-    /* ===== Action Buttons Mobile ===== */
     li div:last-child {
         display: flex;
         gap: 8px;
@@ -266,21 +288,13 @@ li.done strong {
 
     li div:last-child button {
         flex: 1;
-        padding: 10px;
-        font-size: 13px;
     }
 
-    /* ===== Urgent Card Stronger ===== */
-    #urgentList li {
-        background: #ffeaea;
-        border-left: 6px solid #e53935;
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 15px;
+        padding: 12px;
     }
-
-    /* ===== Status Badge Better ===== */
-    .status {
-        font-size: 10px;
-        padding: 3px 8px;
-        margin-top: 6px;
-    }
-
 }
